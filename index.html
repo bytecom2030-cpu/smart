@@ -1,0 +1,490 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Smart Home Dashboard</title>
+  <link rel="stylesheet" href="css/styles.css">
+  <link rel="stylesheet" href="css/animations.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+  <!-- PAGE DE CONNEXION -->
+  <div id="loginPage" class="login-wrapper">
+    <div class="login-card" role="region" aria-labelledby="loginTitle">
+      <div class="login-icon" aria-hidden="true">
+        <svg class="icon-lock" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
+          <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+        </svg>
+      </div>
+      <h1 id="loginTitle" class="login-title">AUTHENTIFICATION</h1>
+      <p class="login-subtitle">Smart Home Control Panel</p>
+
+      <div class="input-group">
+        <label for="pinInput" class="visually-hidden">Code PIN</label>
+        <input 
+          type="password" 
+          id="pinInput" 
+          class="pin-input" 
+          placeholder="••••••••" 
+          maxlength="8" 
+          inputmode="numeric"
+          autocomplete="off"
+          aria-describedby="loginStatus"
+          onkeydown="if(event.key === 'Enter') login()"
+        >
+        <button 
+          type="button" 
+          class="btn-login" 
+          onclick="login()"
+          aria-label="Se connecter"
+        >
+          <span>SE CONNECTER</span>
+          <svg class="icon-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="5" y1="12" x2="19" y2="12"/>
+            <polyline points="12 5 19 12 12 19"/>
+          </svg>
+        </button>
+      </div>
+      <div id="loginStatus" class="login-status" role="status" aria-live="polite"></div>
+    </div>
+  </div>
+
+  <!-- DASHBOARD -->
+  <div id="dashboard" class="dashboard-container hidden" role="main">
+
+    <!-- TOP NAVIGATION -->
+    <header class="top-nav" role="banner">
+      <div class="nav-date" id="navDate" aria-label="Date actuelle">--</div>
+      <nav class="nav-tabs" role="tablist" aria-label="Navigation des pièces">
+        <button class="tab-item active" role="tab" aria-selected="true" data-room="living">Salon</button>
+        <button class="tab-item" role="tab" aria-selected="false" data-room="bedrooms">Chambres</button>
+        <button class="tab-item" role="tab" aria-selected="false" data-room="kitchen">Cuisine</button>
+        <button class="tab-item" role="tab" aria-selected="false" data-room="outside">Extérieur</button>
+      </nav>
+      <button 
+        class="user-profile" 
+        title="Déconnexion" 
+        onclick="logout()"
+        aria-label="Déconnexion"
+      >
+        <span class="user-initials">SH</span>
+      </button>
+    </header>
+
+    <main class="dashboard-grid">
+
+      <!-- COLONNE GAUCHE -->
+      <aside class="col-left">
+        
+        <!-- CARTE METEO -->
+        <div class="card weather-card" role="region" aria-label="Météo extérieure">
+          <div class="weather-widget">
+            <div class="weather-info">
+              <div class="weather-label">Météo extérieure</div>
+              <div class="weather-temp" id="weatherTemp">31°C</div>
+              <div class="weather-desc" id="weatherDesc">Ensoleillé</div>
+            </div>
+            <div class="weather-icon" id="weatherIcon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                <circle cx="12" cy="12" r="5"/>
+                <line x1="12" y1="1" x2="12" y2="3"/>
+                <line x1="12" y1="21" x2="12" y2="23"/>
+                <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/>
+                <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/>
+                <line x1="1" y1="12" x2="3" y2="12"/>
+                <line x1="21" y1="12" x2="23" y2="12"/>
+                <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/>
+                <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
+              </svg>
+            </div>
+          </div>
+        </div>
+
+        <!-- CARTE MUSIQUE -->
+        <div class="card music-card" role="region" aria-label="Contrôle musical">
+          <div class="card-title">
+            <span>Musique</span>
+            <button class="card-menu-btn" aria-label="Menu musique">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="12" cy="12" r="1"/>
+                <circle cx="12" cy="5" r="1"/>
+                <circle cx="12" cy="19" r="1"/>
+              </svg>
+            </button>
+          </div>
+          <div class="music-widget">
+            <div class="music-cover" id="musicCover" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1">
+                <path d="M9 18V5l12-2v13"/>
+                <circle cx="6" cy="18" r="3"/>
+                <circle cx="18" cy="16" r="3"/>
+              </svg>
+            </div>
+            <div class="music-info">
+              <div class="music-title" id="musicTitle">Ambient Track</div>
+              <div class="music-artist" id="musicArtist">Chill Lounge</div>
+            </div>
+            <div class="music-progress">
+              <div class="progress-bar" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">
+                <div class="progress-fill" style="width: 0%"></div>
+              </div>
+              <div class="progress-time">0:00 / 3:45</div>
+            </div>
+            <div class="music-controls" role="group" aria-label="Contrôles musique">
+              <button class="music-btn" aria-label="Précédent">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <polyline points="19 20 9 12 19 4"/>
+                  <line x1="9" y1="4" x2="9" y2="20"/>
+                </svg>
+              </button>
+              <button class="music-btn play-btn" aria-label="Lecture/Pause">
+                <svg class="icon-play" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <polygon points="5 3 19 12 5 21"/>
+                </svg>
+                <svg class="icon-pause hidden" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <line x1="10" y1="4" x2="10" y2="20"/>
+                  <line x1="14" y1="4" x2="14" y2="20"/>
+                </svg>
+              </button>
+              <button class="music-btn" aria-label="Suivant">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <polyline points="5 4 15 12 5 20"/>
+                  <line x1="19" y1="4" x2="19" y2="20"/>
+                </svg>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- CARTE SYSTEME -->
+        <div class="card system-card" role="region" aria-label="État du système">
+          <div class="card-title">
+            <span>État Système</span>
+            <div class="system-indicator" id="systemStatus" aria-live="polite">
+              <span class="indicator-dot"></span>
+              <span id="systemStatusText">En attente...</span>
+            </div>
+          </div>
+          <div class="system-details">
+            <div class="system-item">
+              <span class="system-label">Dernière sync</span>
+              <span id="lastSync">--</span>
+            </div>
+            <div class="system-item">
+              <span class="system-label">Uptime</span>
+              <span id="systemUptime">--</span>
+            </div>
+            <div class="system-item">
+              <span class="system-label">Appareils connectés</span>
+              <span id="connectedDevices">0</span>
+            </div>
+          </div>
+        </div>
+      </aside>
+
+      <!-- COLONNE CENTRALE -->
+      <section class="col-center">
+        
+        <!-- CARTE ECLAIRAGE -->
+        <div class="card lighting-card" role="region" aria-label="Contrôle de l'éclairage">
+          <div class="lighting-header">
+            <div class="lighting-title">Éclairage Principal</div>
+            <div class="lighting-subtitle">Variation d'intensité</div>
+          </div>
+          <div class="lighting-control">
+            <div class="dial-container">
+              <div class="dial" id="lightDial" role="slider" 
+                   aria-valuemin="0" aria-valuemax="100" aria-valuenow="80" 
+                   tabindex="0">
+                <div class="dial-track"></div>
+                <div class="dial-fill" id="dialFill" style="--dial-value: 80"></div>
+                <div class="dial-thumb" id="dialThumb"></div>
+                <div class="dial-center">
+                  <span class="dial-value" id="dialValue">80%</span>
+                  <span class="dial-label">Intensité</span>
+                </div>
+              </div>
+            </div>
+            <div class="power-btn " id="lightPowerBtn" onclick="toggleLightPower()" aria-label="Allumer/Éteindre la lumière">
+              <svg class="icon-power" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M18.36 6.64a9 9 0 1 1-12.73 0"/>
+                <line x1="12" y1="2" x2="12" y2="12"/>
+              </svg>
+            </div>
+          </div>
+          <div class="lighting-presets">
+            <button class="preset-btn" onclick="setLightPreset(25)" aria-label="Lumière tamisée">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                <path d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707"/>
+              </svg>
+              <span>Tamisé</span>
+            </button>
+            <button class="preset-btn" onclick="setLightPreset(50)" aria-label="Lumière moyenne">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                <circle cx="12" cy="12" r="5"/>
+                <line x1="12" y1="1" x2="12" y2="3"/>
+                <line x1="12" y1="21" x2="12" y2="23"/>
+                <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/>
+                <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/>
+              </svg>
+              <span>Moyen</span>
+            </button>
+            <button class="preset-btn" onclick="setLightPreset(75)" aria-label="Lumière vive">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                <path d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707"/>
+                <circle cx="12" cy="12" r="4"/>
+              </svg>
+              <span>Vif</span>
+            </button>
+            <button class="preset-btn" onclick="setLightPreset(100)" aria-label="Lumière maximale">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                <circle cx="12" cy="12" r="5"/>
+                <line x1="12" y1="7" x2="12" y2="17"/>
+                <line x1="7" y1="12" x2="17" y2="12"/>
+              </svg>
+              <span>Max</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- CARTE RELAIS ESP32 -->
+        <div class="card relay-card" role="region" aria-label="Commandes des relais ESP32">
+          <div class="card-title">
+            <span>Commandes Équipements (Relais ESP32)</span>
+            <button class="card-menu-btn" onclick="toggleAllRelays()" aria-label="Tout inverser">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <polyline points="15 6 9 12 15 18"/>
+              </svg>
+            </button>
+          </div>
+          <div class="relay-btn-grid" role="grid" aria-label="Grille des relais">
+            
+            <button id="r1" class="relay-card" onclick="toggleRelay(1)" aria-label="Relais 1 - Salon" aria-pressed="false">
+              <div class="relay-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                  <path d="M9 18l3-3-3-3-3 3 3 3z"/>
+                  <path d="M15 18l-3-3 3-3 3 3-3 3z"/>
+                  <path d="M12 2v2"/>
+                  <path d="M12 20v2"/>
+                  <path d="M2 12h2"/>
+                  <path d="M20 12h2"/>
+                  <path d="M4.93 4.93l1.41 1.41"/>
+                  <path d="M17.66 17.66l1.41 1.41"/>
+                  <path d="M4.93 19.07l1.41-1.41"/>
+                  <path d="M17.66 6.34l1.41-1.41"/>
+                </svg>
+              </div>
+              <div class="relay-info">
+                <div class="name">Relais 1 - Salon</div>
+                <div id="r1-status" class="status">OFF</div>
+              </div>
+            </button>
+
+            <button id="r2" class="relay-card" onclick="toggleRelay(2)" aria-label="Relais 2 - Chambre 1" aria-pressed="false">
+              <div class="relay-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                  <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+                  <circle cx="12" cy="7" r="4"/>
+                </svg>
+              </div>
+              <div class="relay-info">
+                <div class="name">Relais 2 - Chambre 1</div>
+                <div id="r2-status" class="status">OFF</div>
+              </div>
+            </button>
+
+            <button id="r3" class="relay-card" onclick="toggleRelay(3)" aria-label="Relais 3 - Chambre 2" aria-pressed="false">
+              <div class="relay-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                  <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
+                  <line x1="9" y1="9" x2="15" y2="9"/>
+                  <line x1="9" y1="15" x2="15" y2="15"/>
+                  <line x1="9" y1="3" x2="9" y2="21"/>
+                  <line x1="15" y1="3" x2="15" y2="21"/>
+                </svg>
+              </div>
+              <div class="relay-info">
+                <div class="name">Relais 3 - Chambre 2</div>
+                <div id="r3-status" class="status">OFF</div>
+              </div>
+            </button>
+
+            <button id="r4" class="relay-card" onclick="toggleRelay(4)" aria-label="Relais 4 - Cuisine" aria-pressed="false">
+              <div class="relay-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                  <rect x="2" y="8" width="20" height="12" rx="2"/>
+                  <path d="M8 20h8"/>
+                  <path d="M6 4h12"/>
+                  <circle cx="9" cy="14" r="1"/>
+                  <circle cx="15" cy="14" r="1"/>
+                </svg>
+              </div>
+              <div class="relay-info">
+                <div class="name">Relais 4 - Cuisine</div>
+                <div id="r4-status" class="status">OFF</div>
+              </div>
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <!-- COLONNE DROITE -->
+      <aside class="col-right">
+        
+        <!-- CARTE THERMOSTAT -->
+        <div class="card thermostat-card" role="region" aria-label="Contrôle de la climatisation">
+          <div class="thermostat-header">
+            <div class="card-title">
+              <span>Climatisation</span>
+              <button class="power-btn " id="acPowerBtn" onclick="toggleACPowers()" aria-label="Allumer/Éteindre la climatisation">
+                <svg class="icon-power" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M18.36 6.64a9 9 0 1 1-12.73 0"/>
+                  <line x1="12" y1="2" x2="12" y2="12"/>
+                </svg>
+              </button>
+            </div>
+          </div>
+          
+          <div class="thermostat-display">
+            <div class="thermostat-mode" id="thermostatMode">
+              <span class="mode-badge cooling">REFROIDISSEMENT</span>
+            </div>
+            <div class="thermostat-temp">
+              <span id="currentTemp">23°C</span>
+            </div>
+            <div class="thermostat-target">
+              <span>Cible : </span>
+              <span id="targetTemp">20°C</span>
+            </div>
+          </div>
+
+          <div class="thermostat-controls">
+            <div class="temp-adjust">
+              <div class="temp-label">Température</div>
+              <div class="temp-buttons">
+                <button class="temp-btn" onclick="decreaseTargetTemp()" aria-label="Diminuer la température">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <line x1="5" y1="12" x2="19" y2="12"/>
+                  </svg>
+                </button>
+                <button class="temp-btn" onclick="increaseTargetTemp()" aria-label="Augmenter la température">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <line x1="12" y1="5" x2="12" y2="19"/>
+                    <line x1="5" y1="12" x2="19" y2="12"/>
+                  </svg>
+                </button>
+              </div>
+            </div>
+
+            <div class="action-mode">
+              <div class="mode-label">Mode d'action</div>
+              <div class="action-mode-grid" role="radiogroup" aria-label="Mode de climatisation">
+                <button class="mode-btn active" onclick="setThermostatMode('cool')" aria-pressed="true" data-mode="cool">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                    <path d="M12 2v20M12 2l8 8-8 8-8-8 8-8z"/>
+                  </svg>
+                  <span>Froid</span>
+                </button>
+                <button class="mode-btn" onclick="setThermostatMode('heat')" aria-pressed="false" data-mode="heat">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                    <circle cx="12" cy="12" r="4"/>
+                    <path d="M12 2v2"/>
+                    <path d="M12 20v2"/>
+                    <path d="M4.93 4.93l1.41 1.41"/>
+                    <path d="M17.66 17.66l1.41 1.41"/>
+                    <path d="M2 12h2"/>
+                    <path d="M20 12h2"/>
+                    <path d="M4.93 19.07l1.41-1.41"/>
+                    <path d="M17.66 6.34l1.41-1.41"/>
+                  </svg>
+                  <span>Chaud</span>
+                </button>
+                <button class="mode-btn" onclick="setThermostatMode('auto')" aria-pressed="false" data-mode="auto">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                    <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26"/>
+                  </svg>
+                  <span>Auto</span>
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <div class="thermostat-footer">
+            <div class="footer-item">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                <circle cx="12" cy="12" r="10"/>
+                <polyline points="12 6 12 12 16 14"/>
+              </svg>
+              <span>Minuterie: <b id="acTimer">2h</b></span>
+            </div>
+            <div class="footer-item">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                <path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z"/>
+              </svg>
+              <span>Humidité: <b id="humidity">36%</b></span>
+            </div>
+          </div>
+        </div>
+
+        <!-- CARTE STATISTIQUES -->
+        <div class="card stats-card" role="region" aria-label="Statistiques énergétiques">
+          <div class="card-title">
+            <span>Statistiques Énergétiques</span>
+            <select class="stats-period" aria-label="Période des statistiques">
+              <option value="day">Aujourd'hui</option>
+              <option value="week">Cette semaine</option>
+              <option value="month">Ce mois</option>
+            </select>
+          </div>
+          <div class="stats-grid">
+            <div class="stat-item">
+              <div class="stat-icon energy">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                  <path d="M18 14.5V6.5"/>
+                  <path d="M15 18l-6-6 6-6"/>
+                  <path d="M9 18V6.5"/>
+                </svg>
+              </div>
+              <div class="stat-info">
+                <div class="stat-value" id="energyConsumption">12.5 kWh</div>
+                <div class="stat-label">Consommation</div>
+              </div>
+            </div>
+            <div class="stat-item">
+              <div class="stat-icon cost">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                  <line x1="12" y1="1" x2="12" y2="23"/>
+                  <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>
+                </svg>
+              </div>
+              <div class="stat-info">
+                <div class="stat-value" id="energyCost">€1.87</div>
+                <div class="stat-label">Coût estimé</div>
+              </div>
+            </div>
+            <div class="stat-item">
+              <div class="stat-icon co2">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                  <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
+                  <polyline points="22 4 12 14.01 9 11.01"/>
+                </svg>
+              </div>
+              <div class="stat-info">
+                <div class="stat-value" id="co2Saved">2.4 kg</div>
+                <div class="stat-label">CO2 évité</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </aside>
+    </main>
+  </div>
+
+  <!-- TOAST NOTIFICATIONS -->
+  <div id="toastContainer" class="toast-container" aria-live="polite"></div>
+
+  <script src="js/app.js"></script>
+</body>
+</html>
